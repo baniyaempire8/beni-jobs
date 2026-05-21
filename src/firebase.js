@@ -1,6 +1,6 @@
-// ── Baniya Jobs — Firebase ──────────────────────────────────────
+// ── Beni Jobs — Firebase ──────────────────────────────────────
 // 1. Go to console.firebase.google.com
-// 2. Create project "baniya-jobs"
+// 2. Create project "beni-jobs"
 // 3. Add Web App → copy config
 // 4. Create .env.local and paste your values (see .env.example)
 // 5. Enable: Firestore, Authentication (Email/Password), Storage

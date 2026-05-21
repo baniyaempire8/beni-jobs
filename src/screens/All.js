@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { registerUser, loginUser, postJob, logoutUser } from "../firebase_helpers";
 import { useNavigate, useParams } from "react-router-dom";
 import { useApp } from "../AppContext";
 import { PROVINCES, ALL_DISTRICTS, JOB_CATEGORIES } from "../data/nepal";
@@ -87,7 +88,7 @@ export function WelcomeScreen() {
     <div className="screen">
       <div style={{ background:"var(--navy)", flex:1, display:"flex", flexDirection:"column", justifyContent:"center", alignItems:"center", padding:"60px 24px 32px", textAlign:"center" }}>
         <div style={{ background:"rgba(244,168,35,.2)", width:84, height:84, borderRadius:22, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:18, fontSize:38 }}>💼</div>
-        <div style={{ fontSize:11, fontWeight:700, letterSpacing:".15em", color:"rgba(255,255,255,.4)", marginBottom:10 }}>BANIYA JOBS</div>
+        <div style={{ fontSize:11, fontWeight:700, letterSpacing:".15em", color:"rgba(255,255,255,.4)", marginBottom:10 }}>BENI JOBS</div>
         <h1 style={{ fontSize:30, fontWeight:900, color:"#fff", lineHeight:1.2, marginBottom:10 }}>
           Nepal's <span style={{ color:"var(--gold)" }}>Job</span><br />Platform
         </h1>
@@ -126,15 +127,18 @@ export function RegisterScreen() {
   const [f, setF] = useState({ name:"", phone:"", district:"", bizName:"", password:"" });
   const set = (k,v) => setF(p => ({...p,[k]:v}));
 
-  const submit = () => {
+  const submit = async () => {
     if (!f.name)       return show("Please enter your full name");
     if (!f.phone)      return show("Please enter your phone number");
     if (!f.district)   return show("Please select your district");
     if (f.password.length < 6) return show("Password must be at least 6 characters");
     if (role === "employer" && !f.bizName) return show("Please enter your business name");
-    // TODO: Firebase createUserWithEmailAndPassword or phone auth
-    setUser({ name:f.name, phone:f.phone, district:f.district, role, verified:false, bizName:f.bizName });
-    navigate("/pending");
+    try {
+      show("Creating account...");
+      const userData = await registerUser({ name:f.name, phone:f.phone, district:f.district, role, password:f.password, bizName:f.bizName });
+      setUser(userData);
+      navigate("/pending");
+    } catch(e) { show(e.message || "Registration failed. Try again."); }
   };
 
   return (
@@ -193,12 +197,15 @@ export function LoginScreen() {
   const [phone, setPhone] = useState("");
   const [pass, setPass]   = useState("");
 
-  const login = () => {
+  const login = async () => {
     if (!phone) return show("Please enter your phone number");
     if (!pass)  return show("Please enter your password");
-    // TODO: Firebase signInWithEmailAndPassword
-    setUser({ name:"Hari Bahadur Thapa", phone, district:"myagdi", role:"jobseeker", verified:false });
-    navigate("/home");
+    try {
+      show("Signing in...");
+      const userData = await loginUser(phone, pass);
+      setUser(userData);
+      navigate("/home");
+    } catch(e) { show("Wrong phone or password. Try again."); }
   };
   const demoEmployer = () => {
     setUser({ name:"Ram Sharma", phone:"+16672897651", district:"myagdi", role:"employer", verified:true });
@@ -213,7 +220,7 @@ export function LoginScreen() {
         <div style={{ textAlign:"center", marginBottom:28 }}>
           <div style={{ fontSize:36, marginBottom:10 }}>👋</div>
           <div style={{ fontSize:18, fontWeight:800, color:"var(--navy)" }}>Welcome back!</div>
-          <div style={{ fontSize:12, color:"var(--muted)", marginTop:4 }}>Sign in to Baniya Jobs</div>
+          <div style={{ fontSize:12, color:"var(--muted)", marginTop:4 }}>Sign in to Beni Jobs</div>
         </div>
         <div className="field"><label className="label">Phone Number</label>
           <input className="input" type="tel" placeholder="+977 98XXXXXXXX" value={phone} onChange={e=>setPhone(e.target.value)} /></div>
@@ -430,9 +437,12 @@ export function PostJobScreen() {
     if (!f.desc)  return show("Please describe the job");
     if (!f.phone) return show("Please enter a contact phone number");
     if (!user?.verified) return show("⚠️ Account must be verified before posting");
-    // TODO: Write to Firebase Firestore collection "jobs"
-    show("Job submitted! ✅ Will be live in 2–4 hours.");
-    setTimeout(() => navigate("/home"), 1800);
+    try {
+      show("Submitting job...");
+      await postJob({ title:f.title, cat:f.cat, locCustom:f.loc, district:f.district, salMin:f.salMin, salMax:f.salMax, type:f.type, desc:f.desc, req:f.req, phone:f.phone, urgent:f.urgent }, user);
+      show("Job submitted! ✅ Will be reviewed and live in 2–4 hours.");
+      setTimeout(() => navigate("/home"), 1800);
+    } catch(e) { show("Failed to post job. Try again."); }
   };
 
   return (
@@ -491,7 +501,7 @@ export function PostJobScreen() {
           <input type="checkbox" id="urgent" style={{ width:18, height:18, cursor:"pointer" }} checked={f.urgent} onChange={e=>set("urgent",e.target.checked)} />
           <label htmlFor="urgent" style={{ fontSize:13, fontWeight:600, cursor:"pointer", color:"var(--navy)" }}>🔥 Mark as URGENT hiring</label>
         </div>
-        <button className="btn btn-gold btn-full btn-lg" onClick={submit}>📤 Post Job — Free</button>
+        <button className="btn btn-gold btn-full btn-lg" onClick={submitJob}>📤 Post Job — Free</button>
         <p style={{ fontSize:10, color:"var(--muted)", textAlign:"center", marginTop:10 }}>
           Job reviewed by our team before publishing. Usually live within 2–4 hours.
         </p>
@@ -557,7 +567,7 @@ export function ProfileScreen() {
   const { show, Toast } = useToast();
   const district = ALL_DISTRICTS.find(d => d.id === user?.district);
 
-  const logout = () => { show("Logging out..."); setTimeout(() => { setUser(null); navigate("/"); }, 800); };
+  const logout = async () => { show("Logging out..."); await logoutUser(); setUser(null); navigate("/"); };
 
   return (
     <div className="screen">
@@ -626,8 +636,8 @@ export function ProfileScreen() {
         </div>
 
         <div style={{ textAlign:"center", marginTop:20, padding:16, background:"var(--warm)", borderRadius:14, border:"1.5px solid var(--border)" }}>
-          <div style={{ fontSize:13, fontWeight:800, color:"var(--navy)" }}>Baniya Jobs</div>
-          <div style={{ fontSize:10, color:"var(--muted)", marginTop:3 }}>Part of Baniya Empire · बेनी, म्याग्दी, नेपाल</div>
+          <div style={{ fontSize:13, fontWeight:800, color:"var(--navy)" }}>Beni Jobs</div>
+          <div style={{ fontSize:10, color:"var(--muted)", marginTop:3 }}>बेनी, म्याग्दी, नेपाल 🏔️</div>
           <a href={`https://wa.me/${WA}`} style={{ display:"inline-block", marginTop:8, fontSize:11, color:"var(--sky)", fontWeight:600, textDecoration:"none" }}>💬 WhatsApp Support</a>
         </div>
       </div>

@@ -1,4 +1,4 @@
-# 💼 Baniya Jobs
+# 💼 Beni Jobs
 ### Nepal's Job Platform — Started in Beni, Myagdi 🏔️
 
 ---
@@ -23,8 +23,8 @@ npm start
 ## 🔥 Firebase Setup (5 minutes)
 
 1. Go to https://console.firebase.google.com
-2. **Create project** → name it `baniya-jobs`
-3. Click **Add app** → Web `</>`  → name it `baniya-jobs-web`
+2. **Create project** → name it `beni-jobs`
+3. Click **Add app** → Web `</>`  → name it `beni-jobs-web`
 4. Copy the `firebaseConfig` values into your `.env.local` file
 5. In Firebase console, enable these:
    - **Authentication** → Email/Password (for now)
@@ -57,7 +57,7 @@ In Vercel:
 ## 📁 Project Structure
 
 ```
-baniya-jobs/
+beni-jobs/
 ├── public/
 │   ├── index.html
 │   └── manifest.json
@@ -103,4 +103,4 @@ WhatsApp: +1 667 289 7651
 
 ---
 
-Built with ❤️ — Baniya Empire · बेनी, म्याग्दी, नेपाल
+Built with ❤️ — बेनी, म्याग्दी, नेपाल 🏔️
