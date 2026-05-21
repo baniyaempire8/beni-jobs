@@ -1,9 +1,24 @@
 {
-  "short_name": "Beni Jobs",
-  "name": "Beni Jobs — Nepal's Job Platform",
+  "short_name": "Baniya Jobs",
+  "name": "Baniya Jobs — Nepal's Job Platform",
+  "description": "Find jobs or hire staff anywhere in Nepal. Started in Beni, Myagdi.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#0A2342",
-  "background_color": "#F8FAFF"
+  "background_color": "#F8FAFF",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }

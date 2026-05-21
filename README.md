@@ -1,106 +1,114 @@
-# 💼 Beni Jobs
-### Nepal's Job Platform — Started in Beni, Myagdi 🏔️
+# 💼 Baniya Jobs
+### Nepal's Job Platform — Started in Beni, Myagdi
 
 ---
 
-## ⚡ Run Locally (Test on your computer)
+## 🚀 How to Run This App
 
-```bash
-# Step 1 — Install packages
-npm install
+### Step 1 — Install Node.js
+Download from: https://nodejs.org (choose LTS version)
 
-# Step 2 — Create your environment file
-cp .env.example .env.local
-# Open .env.local and fill in your Firebase keys
-
-# Step 3 — Start the app
-npm start
-# Opens at http://localhost:3000 ✅
+### Step 2 — Open terminal, go to this folder
+```
+cd baniya-jobs
 ```
 
+### Step 3 — Install packages
+```
+npm install
+```
+
+### Step 4 — Start the app
+```
+npm start
+```
+It will open in your browser at http://localhost:3000 ✅
+
 ---
 
-## 🔥 Firebase Setup (5 minutes)
+## 🔥 Connect to Firebase (Real Database)
 
 1. Go to https://console.firebase.google.com
-2. **Create project** → name it `beni-jobs`
-3. Click **Add app** → Web `</>`  → name it `beni-jobs-web`
-4. Copy the `firebaseConfig` values into your `.env.local` file
-5. In Firebase console, enable these:
-   - **Authentication** → Email/Password (for now)
-   - **Firestore Database** → Start in test mode
-   - **Storage** → Start in test mode
+2. Click "Add project" → name it "baniya-jobs"
+3. Add a **Web App**
+4. Copy the config keys
+5. Open `src/firebase.js` and paste your keys there
+6. In Firebase console, enable:
+   - **Authentication** → Phone (for OTP login)
+   - **Firestore Database** → for users and jobs
+   - **Storage** → for CV/photo uploads
+
+### Firestore Collections needed:
+- `users` — each user document (name, phone, district, role, verified)
+- `jobs` — each job posting (title, location, salary, etc.)
+- `applications` — when someone applies
 
 ---
 
-## 🚀 Deploy to Vercel (Free — 3 minutes)
+## 📱 Turn into Android App (Play Store)
 
-1. Push this code to GitHub
-2. Go to https://vercel.com → **New Project**
-3. Import your GitHub repo
-4. Add your Firebase keys under **Environment Variables**
-5. Click **Deploy** → your app is LIVE! ✅
+Since you already have a Google Play Developer account:
 
----
+### Option A — PWA (Easiest, free)
+1. Run `npm run build`
+2. Deploy to web hosting (Firebase Hosting is free)
+3. Users can "Add to Home Screen" from Chrome — works like an app!
 
-## 🌐 Connect your domain (jobs.benidash.com)
-
-In Vercel:
-1. Go to your project → **Settings** → **Domains**
-2. Type `jobs.benidash.com` → Add
-3. Vercel gives you a DNS record
-4. Go to your domain registrar (GoDaddy etc.)
-5. Add the DNS record → Live in 10 minutes!
-
----
-
-## 📁 Project Structure
-
+### Option B — Capacitor (Real APK for Play Store)
 ```
-beni-jobs/
-├── public/
-│   ├── index.html
-│   └── manifest.json
+npm install @capacitor/core @capacitor/cli @capacitor/android
+npx cap init "Baniya Jobs" "com.baniyaempire.jobs"
+npm run build
+npx cap add android
+npx cap sync
+npx cap open android
+```
+Then in Android Studio → Build → Generate Signed APK → Upload to Play Store
+
+---
+
+## 📞 Your WhatsApp Contact
+Currently set to: +1 667 289 7651
+To change: search for "16672897651" and replace with your number
+
+---
+
+## 🗂️ Project Structure
+```
+baniya-jobs/
 ├── src/
-│   ├── index.js          ← Entry point
-│   ├── App.js            ← Routing
-│   ├── App.css           ← All styles
-│   ├── AppContext.js      ← Global state
-│   ├── firebase.js        ← Firebase config
+│   ├── App.js           — Main app + routing
+│   ├── App.css          — All styles
+│   ├── AppContext.js    — Global state (user, language, saved jobs)
+│   ├── firebase.js      — Firebase config (add your keys here)
 │   ├── data/
-│   │   ├── nepal.js       ← All 77 districts
-│   │   └── sampleJobs.js  ← Sample jobs
+│   │   ├── nepal.js     — All 77 districts of Nepal
+│   │   └── jobs.js      — Sample jobs (replace with Firebase)
 │   └── screens/
-│       └── All.js         ← All 9 screens
-├── .env.example           ← Copy to .env.local
-├── .gitignore             ← Keeps secrets safe
-└── package.json
+│       └── index.js     — All 9 screens
+├── package.json
+└── README.md
 ```
 
 ---
 
-## 📱 Screens
-1. **Welcome** — Job Seeker or Employer
-2. **Register** — Name, phone, district
+## 🧩 Screens
+1. **Welcome** — Choose Job Seeker or Employer
+2. **Register** — Name, phone, district, password
 3. **Login** — Sign in
 4. **Pending** — Waiting for verification
 5. **Home** — Browse & filter jobs
 6. **Job Detail** — Apply, save, WhatsApp
 7. **Post Job** — Employers post jobs
-8. **Saved/Applied** — Track your jobs
-9. **Profile** — CV, skills, open to work
+8. **Saved/Applied** — Track applications
+9. **Profile** — CV, settings, language
 
 ---
 
-## 🗺️ Locations
-All 77 districts of Nepal included, grouped by province.
-Jobs have specific landmark-based locations (e.g. "next to Myagdi Bus Park").
+## 🌐 Languages
+- English and Nepali (NP) toggle on every screen
+- All 77 districts listed in both languages
 
 ---
 
-## 📞 Contact / Support
-WhatsApp: +1 667 289 7651
-
----
-
-Built with ❤️ — बेनी, म्याग्दी, नेपाल 🏔️
+Built with ❤️ for Baniya Empire · Beni, Myagdi, Nepal
