@@ -1,18 +1,25 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider, useApp } from "./AppContext";
 
-import WelcomeScreen,
-{ RegisterScreen, LoginScreen, PendingScreen,
-  HomeScreen, JobDetailScreen, PostJobScreen,
-  SavedScreen, ProfileScreen } from "./screens/index";
+import WelcomeScreen   from "./screens/WelcomeScreen";
+import RegisterScreen  from "./screens/RegisterScreen";
+import LoginScreen     from "./screens/LoginScreen";
+import PendingScreen   from "./screens/PendingScreen";
+import HomeScreen      from "./screens/HomeScreen";
+import JobDetailScreen from "./screens/JobDetailScreen";
+import PostJobScreen   from "./screens/PostJobScreen";
+import SavedScreen     from "./screens/SavedScreen";
+import ProfileScreen   from "./screens/ProfileScreen";
 
 import "./App.css";
 
+// If user is logged in, redirect away from auth screens
 function AuthRoute({ children }) {
   const { user } = useApp();
   return user ? <Navigate to="/home" replace /> : children;
 }
 
+// If user is NOT logged in, redirect to welcome
 function ProtectedRoute({ children }) {
   const { user } = useApp();
   return user ? children : <Navigate to="/" replace />;
